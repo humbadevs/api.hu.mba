@@ -1,5 +1,5 @@
 name: API Deploy and Execute
-on: 
+on:
   push:
     branches: master
 jobs:
@@ -13,7 +13,7 @@ jobs:
       run: npm i
     - name: Setup server
       uses: appleboy/ssh-action@master
-      env: 
+      env:
           DBPw: ${{ secrets.DBPw }}
       with:
         host: server.max.berlin
@@ -26,4 +26,5 @@ jobs:
           git clone https://github.com/humbadevs/api.hu.mba.git
           cd api.hu.mba
           npm i
+          fuser -k 4563/tcp
           nohup node server.js &
