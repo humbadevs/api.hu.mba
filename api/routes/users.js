@@ -8,7 +8,7 @@ const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 
 
-router.get("/users", (req, res, next) => {
+router.get("/user", (req, res, next) => {
   User.find()
     .exec()
     .then(docs => {
@@ -19,6 +19,21 @@ router.get("/users", (req, res, next) => {
       console.log(err);
       res.status(500).json({
         error: err
+      });
+    });
+});
+
+router.get("/user/:email", (req, res, next) => {
+  User.find({ email: req.params.email })
+    .exec()
+    .then(docs => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(404).json({
+        error: "User not found"
       });
     });
 });
@@ -42,7 +57,7 @@ router.post("/register", (req, res, next) => {
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email,
               firstname: req.body.firstname,
-              lastname: req.body.firstname,
+              lastname: req.body.lastname,
               password: hash
             });
             user
@@ -109,7 +124,7 @@ router.post("/login", (req, res, next) => {
   });
 });
 
-router.delete('/users/:email', (req, res, next) => {
+router.delete('/user/:email', (req, res, next) => {
 User.remove({ email: req.params.email })
     .exec()
     .then(result => {
