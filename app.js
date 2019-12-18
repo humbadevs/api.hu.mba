@@ -24,6 +24,11 @@ app.use((req, res, next)=> {
     next();
 });
 
+// ping pong
+app.use('/ping', (req, res) => {
+    res.text("pong")
+});
+
 //Routes for handling requests
 app.use('/', userRoute);
 
