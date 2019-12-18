@@ -28,3 +28,4 @@ jobs:
           npm i
           fuser -k 4563/tcp
           nohup node server.js &
+          echo success
