@@ -24,8 +24,8 @@ jobs:
         script: |
           cd /home/humba/host/api/
           git clone https://github.com/humbadevs/api.hu.mba.git
-          git pull
           cd api.hu.mba
+          git pull
           npm i
           fuser -k 4563/tcp
           nohup node server.js &
