@@ -24,6 +24,8 @@ app.use((req, res, next)=> {
     next();
 });
 
+// ping pong
+
 //Routes for handling requests
 app.use('/', userRoute);
 
