@@ -11,19 +11,16 @@ jobs:
       uses: actions/setup-node@v1.1.0
     - name: Install packages
       run: npm i
-    - name: deploy-via-scp
-      uses: horochx/deploy-via-scp@master
-      with:
-        local: ./*
-        remote: /home/humba/host/api/
-        host: server.max.berlin
-        user: humba
-        key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
-    - name: start server
+    - name: Setup server
       uses: appleboy/ssh-action@master
       with:
         host: server.max.berlin
         username: humba
         key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
         port: 22
-        script: nohup node /home/humba/host/api/server.js
+        script: |
+          cd /home/humba/host/api/
+          git clone https://github.com/humbadevs/api.hu.mba.git
+          cd api.hu.mba
+          npm i
+          nohup node server.js"
