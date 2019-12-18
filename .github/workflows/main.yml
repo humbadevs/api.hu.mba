@@ -13,11 +13,15 @@ jobs:
       run: npm i
     - name: Setup server
       uses: appleboy/ssh-action@master
+      env: 
+          PORT: ${{ secrets.PORT }}
+          DBPw: ${{ secrets.DBPw }}
       with:
         host: server.max.berlin
         username: humba
         key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
         port: 22
+        envs: PORT,DBPw
         script: |
           cd /home/humba/host/api/
           git clone https://github.com/humbadevs/api.hu.mba.git
