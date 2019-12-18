@@ -19,8 +19,6 @@ jobs:
         key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
         port: 22
         script: |
-          export $PORT="${{ secrets.PORT }}"
-          export $DBPw="${{ secrets.DBPw }}"
           cd /home/humba/host/api/
           git clone https://github.com/humbadevs/api.hu.mba.git
           cd api.hu.mba
