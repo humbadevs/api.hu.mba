@@ -28,7 +28,6 @@ jobs:
           git pull
           npm i
           fuser -k 4563/tcp
-          nohup node server.js &
-          echo success
+          nohup node server.js </dev/null &>/dev/null &
           disown
           exit
