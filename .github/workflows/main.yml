@@ -14,7 +14,7 @@ jobs:
     - name: deploy-via-scp
       uses: horochx/deploy-via-scp@master
       with:
-        local: ${{ GITHUB_WORKSPACE }}
+        local: ${{ $GITHUB_WORKSPACE }}
         remote: /home/humba/host/api/
         host: server.max.berlin
         user: humba
