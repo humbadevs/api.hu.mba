@@ -1,0 +1,30 @@
+name: API Deploy and Execute
+on: 
+  push:
+    branches: master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Node Setup
+      uses: actions/setup-node@v1.1.0
+    - name: Install packages
+      run: |
+        npm i
+    - name: deploy-via-scp
+      uses: horochx/deploy-via-scp@master
+      with:
+        local: .
+        remote: /home/humba/host/api/
+        host: server.max.berlin
+        user: humba
+        key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
+    - name: executing remote ssh commands using ssh key
+      uses: appleboy/ssh-action@master
+      with:
+        host: server.max.berlin
+        username: humba
+        key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
+        port: 22
+        script: nohup node /home/humba/host/api/server.js
