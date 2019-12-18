@@ -26,4 +26,4 @@ jobs:
           git clone https://github.com/humbadevs/api.hu.mba.git
           cd api.hu.mba
           npm i
-          nohup node server.js
+          nohup node server.js &
