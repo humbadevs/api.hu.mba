@@ -10,8 +10,7 @@ jobs:
     - name: Node Setup
       uses: actions/setup-node@v1.1.0
     - name: Install packages
-      run: |
-        npm i
+      run: npm i
     - name: deploy-via-scp
       uses: horochx/deploy-via-scp@master
       with:
@@ -20,7 +19,7 @@ jobs:
         host: server.max.berlin
         user: humba
         key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
-    - name: executing remote ssh commands using ssh key
+    - name: start server
       uses: appleboy/ssh-action@master
       with:
         host: server.max.berlin
