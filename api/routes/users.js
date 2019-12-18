@@ -24,6 +24,8 @@ router.post("/register", (req, res, next) => {
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email,
+              firstname: req.body.firstname,
+              lastname: req.body.firstname,
               password: hash
             });
             user
@@ -69,7 +71,7 @@ router.post("/login", (req, res, next) => {
             },
             process.env.JWT_KEY,
             {
-                expiresIn: "1h"
+                expiresIn: "31d"
             }
           );
           return res.status(200).json({
@@ -105,5 +107,6 @@ router.delete("/user/:userId", (req, res, next) => {
       });
     });
 });
+
 
 module.exports = router;

@@ -8,7 +8,15 @@ const userSchema = mongoose.Schema({
         unique: true, 
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     },
+    firstname: {
+        type: String,
+        required: true
+    },
+    lastname: {
+        type: String,
+        required: true
+    },
     password: { type: String, required: true }
 });
 
-module.exports = mongoose.model('Product', userSchema);
+module.exports = mongoose.model('User', userSchema);
