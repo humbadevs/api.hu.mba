@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const userRoute = require('./api/routes/users');
+const userRoute = require('./api/routes/user');
 
 mongoose.connect('mongodb+srv://root:' + process.env.DBPw + '@node-rest-test-trriz.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -30,7 +30,7 @@ app.use('/ping', (req, res) => {
 });
 
 //Routes for handling requests
-app.use('/', userRoute);
+app.use("/", userRoute);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
