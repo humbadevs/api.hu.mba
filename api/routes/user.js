@@ -140,5 +140,12 @@ User.remove({ email: req.params.email })
     });
   });
 
+  // Password Update
+  router.patch('/user/:email', checkAuth, (req, res, next) =>{
+    User.find({ email: req.params.email})
+    .exec()
+    .then(user =>)
+  })
+
 
 module.exports = router;
