@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
+const crypto = require("crypto");
 
 
 router.get("/user", checkAuth, (req, res, next) => {
@@ -149,8 +150,15 @@ User.remove({ email: req.params.email })
           return res.status(401).json({
             message: "Auth failed"
           });
-        } else{
-          
+        } 
+        else{
+          crypto.randomBytes(20, function(err, buf){
+            var token = buf.toString('hex');
+            done(err, token);
+          });
+          user.resetPasswordtoken = token;
+          user.resetPasswordExpires = Date.now() + 3600000; //1h
+
         }
     })
     .catch(err => {
