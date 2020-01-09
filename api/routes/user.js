@@ -144,8 +144,22 @@ User.remove({ email: req.params.email })
   router.patch('/user/:email', checkAuth, (req, res, next) =>{
     User.find({ email: req.params.email})
     .exec()
-    .then(user =>)
-  })
+    .then(result => {
+        if(user.length < 1) {
+          return res.status(401).json({
+            message: "Auth failed"
+          });
+        } else{
+          
+        }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+          error: err
+      });
+    });
+  });
 
 
 module.exports = router;
