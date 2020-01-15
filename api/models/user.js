@@ -17,12 +17,16 @@ const userSchema = mongoose.Schema({
         required: true
     },
     password: { 
-        type: String, required: true
+        type: String, 
+        required: true
     },
     phonenumber: {
-        type: Number,
+        type: String,
         unique: true,
-        required: true
+        required: false
+    },
+    userImage: {
+        type: String, required: false
     }
 
 });
