@@ -49,7 +49,7 @@ router.get("/user",checkAuth,(req, res, next) => {
     });
 });
 
-router.get("/user/:email",  (req, res, next) => {
+router.get("/user/:email",checkAuth,   (req, res, next) => {
   User.find({ email: req.params.email })
     .exec()
     .then(docs => {
