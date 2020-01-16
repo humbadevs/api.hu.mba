@@ -31,4 +31,5 @@ const pausezeitenSchema = mongoose.Schema({
     
 
 
-}})
+}});
+module.exports = mongoose.model('Pausezeiten', pausezeitenSchema);
