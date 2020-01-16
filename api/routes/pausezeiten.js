@@ -23,20 +23,20 @@ router.get("/pausezeiten",checkAuth,(req, res, next) => {
         });
       });
      
-      router.patch("/:productId", checkAuth, (req, res, next) => {
+      router.patch("/pausezeiten", checkAuth, (req, res, next) => {
         const id = req.params.productId;
         const updateOps = {};
         for (const ops of req.body) {
           updateOps[ops.propName] = ops.value;
         }
-        Product.update({ _id: id }, { $set: updateOps })
+        Pausezeiten.update({ _id: id }, { $set: updateOps })
           .exec()
           .then(result => {
             res.status(200).json({
-                message: 'Product updated',
+                message: 'Pausezeiten updated',
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3000/products/' + id
+                    url: 'http://localhost:4563/pausezeiten/' + id
                 }
             });
           })
