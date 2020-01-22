@@ -3,13 +3,13 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const async = require("async");
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 const crypto = require("crypto");
 
 
-router.get("/user", checkAuth, (req, res, next) => {
+router.get("/user", /*checkAuth,*/ (req, res, next) => {
   User.find()
     .exec()
     .then(docs => {
@@ -24,7 +24,7 @@ router.get("/user", checkAuth, (req, res, next) => {
     });
 });
 
-router.get("/user/:email", checkAuth, (req, res, next) => {
+router.get("/user/:email", /*checkAuth,*/ (req, res, next) => {
   User.find({ email: req.params.email })
     .exec()
     .then(docs => {
@@ -125,7 +125,7 @@ router.post("/login", (req, res, next) => {
   });
 });
 
-router.delete('/user/:email', checkAuth, (req, res, next) => {
+router.delete('/user/:email', /*checkAuth,*/ (req, res, next) => {
 User.remove({ email: req.params.email })
     .exec()
     .then(result => {
@@ -143,7 +143,7 @@ User.remove({ email: req.params.email })
 
 //Password forgot
 
-routes.post('/forgot', function(req, res, next) {
+router.post('/forgot', function(req, res, next) {
   async.waterfall([
     function(done) {
       crypto.randomBytes(20, function(err, buf) {
@@ -154,9 +154,9 @@ routes.post('/forgot', function(req, res, next) {
     function(token, done) {
       User.findOne({ email: req.body.email }, function(err, user) {
         if (!user) {
-        //   console.log('error', 'No account with that email address exists.');
-        req.flash('error', 'No account with that email address exists.');
-          return res.redirect('/forgot');
+        return res.status(404).json({
+          error: "User not found"
+        });
         }
 console.log('step 1')
         user.resetPasswordtoken = token;
@@ -171,25 +171,12 @@ console.log('step 1')
         console.log('step 2')
 
         //Hier Max Code einfügen
-      console.log('step 3')
-
-        smtpTrans.sendMail(mailOptions, function(err) {
-        req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-        console.log('sent')
-        res.redirect('/forgot');
-});
 }
-  ], function(err) {
+  ]
+  , function(err) {
     console.log('this err' + ' ' + err)
     res.redirect('/');
   });
 });
-
-app.get('/forgot', function(req, res) {
-  res.render('forgot', {
-    User: req.user
-  });
-});
-
 
 module.exports = router;

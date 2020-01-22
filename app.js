@@ -88,15 +88,13 @@ app.get('/reset/:token', function(req, res) {
       });
   
     }
-          });
+    });
         });
       },
   
   
   
-  
-  
-      function(user, done) {
+  function(user, done) {/*
           // console.log('got this far 4')
         var smtpTrans = nodemailer.createTransport({
           service: 'Gmail',
@@ -115,11 +113,18 @@ app.get('/reset/:token', function(req, res) {
         smtpTrans.sendMail(mailOptions, function(err) {
           // req.flash('success', 'Success! Your password has been changed.');
           done(err);
-        });
+        }); */
       }
     ], function(err) {
       res.redirect('/');
     });
   });
+
+  app.get('/forgot', function(req, res) {
+    res.render('forgot', {
+      User: req.user
+    });
+  });
+  
 
 module.exports = app;
