@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
+const crypto = require("crypto");
 
 
 router.get("/user", checkAuth, (req, res, next) => {
@@ -139,6 +140,56 @@ User.remove({ email: req.params.email })
       });
     });
   });
+
+//Password forgot
+
+routes.post('/forgot', function(req, res, next) {
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(20, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      User.findOne({ email: req.body.email }, function(err, user) {
+        if (!user) {
+        //   console.log('error', 'No account with that email address exists.');
+        req.flash('error', 'No account with that email address exists.');
+          return res.redirect('/forgot');
+        }
+console.log('step 1')
+        user.resetPasswordtoken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+        user.save(function(err) {
+          done(err, token, user);
+        });
+      });
+    },
+    function(token, user, done) {
+        console.log('step 2')
+
+        //Hier Max Code einfügen
+      console.log('step 3')
+
+        smtpTrans.sendMail(mailOptions, function(err) {
+        req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+        console.log('sent')
+        res.redirect('/forgot');
+});
+}
+  ], function(err) {
+    console.log('this err' + ' ' + err)
+    res.redirect('/');
+  });
+});
+
+app.get('/forgot', function(req, res) {
+  res.render('forgot', {
+    User: req.user
+  });
+});
 
 
 module.exports = router;
