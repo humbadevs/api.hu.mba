@@ -169,6 +169,29 @@ User.remove({ email: req.params.email })
       });
     });
   });
-
+  router.patch("/user/:email/", checkAuth, (req, res, next) => {
+    const id = req.body.email;
+    const updateOps = {};
+    for (const ops of req.body) {
+      updateOps[ops.propName] = ops.value;
+    }
+    Pausezeiten.update({ email: id }, { $set: updateOps })
+      .exec()
+      .then(result => {
+        res.status(200).json({
+            message: 'User updated',
+            request: {
+                type: 'GET',
+                url: 'http://localhost:4563/user/:email/' + id
+            }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+  });
 
 module.exports = router;
