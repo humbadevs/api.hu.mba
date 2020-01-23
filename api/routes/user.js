@@ -207,23 +207,25 @@ router.post('/forgot', function(req, res, next) {
       });
     },
     function(token, done) {
-      User.findOne({ email: req.body.email }, function(err, user) {
+      User.findOne({ email: req.body.email },
+        function(err, user) {
         if (!user) {
-        return res.status(404).json({
-          error: "User not found"
-        });
+          return res.status(404).json({
+            error: "User not found"
+          });
         }
-      console.log('step 1')
+        console.log('step 1')
         user.resetPasswordtoken = token;
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-
-        user.save(function(err) {
+        console.log('step 2')
+        user.save(function(err) {          
           done(err, token, user);
         });
       });
     },
     function(token, user, done) {
-        console.log('step 2')
+      console.log('step 3')
+
 
         //Hier Max Code einfügen
 }
