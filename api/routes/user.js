@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); 
+const async = require("async");
+const crypto = require("crypto");
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
       cb(null, './uploads/');
@@ -34,7 +36,7 @@ const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 
 
-router.get("/user",checkAuth,(req, res, next) => {
+router.get("/user",/*checkAuth,*/(req, res, next) => {
   User.find()
     .exec()
     .then(docs => {
@@ -49,7 +51,7 @@ router.get("/user",checkAuth,(req, res, next) => {
     });
 });
 
-router.get("/user/:email",checkAuth,   (req, res, next) => {
+router.get("/user/:email",/*checkAuth,*/   (req, res, next) => {
   User.find({ email: req.params.email })
     .exec()
     .then(docs => {
@@ -154,7 +156,7 @@ router.post("/login", (req, res, next) => {
   });
 });
 
-router.delete('/user/:email', checkAuth, (req, res, next) => {
+router.delete('/user/:email', /*checkAuth,*/ (req, res, next) => {
 User.remove({ email: req.params.email })
     .exec()
     .then(result => {
@@ -169,7 +171,7 @@ User.remove({ email: req.params.email })
       });
     });
   });
-  router.patch("/user/:email/", checkAuth, (req, res, next) => {
+  router.patch("/user/:email/", /*checkAuth,*/ (req, res, next) => {
     const id = req.body.email;
     const updateOps = {};
     for (const ops of req.body) {
@@ -211,7 +213,7 @@ router.post('/forgot', function(req, res, next) {
           error: "User not found"
         });
         }
-console.log('step 1')
+      console.log('step 1')
         user.resetPasswordtoken = token;
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
