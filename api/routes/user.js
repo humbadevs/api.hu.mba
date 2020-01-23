@@ -3,13 +3,38 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const async = require("async");
+const multer = require("multer"); 
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './uploads/');
+    },
+    filename: function(req, file, cb) {
+      cb(null, new Date().toDateString() + file.originalname  );
+    }
+});
+
+const fileFilter = (req, file, cb) =>{
+  //reject file
+  if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+  cb(null, true);
+} else {
+  cb(null, false)
+}
+  };
+const upload = multer({storage: storage, 
+  limits: {
+  fileSize: 1024 * 1024 * 5  
+},
+fileFilter: fileFilter
+
+});
+
+
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
-const crypto = require("crypto");
 
 
-router.get("/user", /*checkAuth,*/ (req, res, next) => {
+router.get("/user",checkAuth,(req, res, next) => {
   User.find()
     .exec()
     .then(docs => {
@@ -24,7 +49,7 @@ router.get("/user", /*checkAuth,*/ (req, res, next) => {
     });
 });
 
-router.get("/user/:email", /*checkAuth,*/ (req, res, next) => {
+router.get("/user/:email",checkAuth,   (req, res, next) => {
   User.find({ email: req.params.email })
     .exec()
     .then(docs => {
@@ -39,7 +64,8 @@ router.get("/user/:email", /*checkAuth,*/ (req, res, next) => {
     });
 });
 
-router.post("/register", (req, res, next) => {
+router.post("/register", upload.single('userImage'), (req, res, next) => {
+
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
@@ -54,12 +80,15 @@ router.post("/register", (req, res, next) => {
               error: err
             });
           } else {
+           
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email,
               firstname: req.body.firstname,
               lastname: req.body.lastname,
-              password: hash
+              password: hash,
+              phonenumber : req.body.phonenumber,
+              userImage: req.file.path
             });
             user
               .save()
@@ -125,7 +154,7 @@ router.post("/login", (req, res, next) => {
   });
 });
 
-router.delete('/user/:email', /*checkAuth,*/ (req, res, next) => {
+router.delete('/user/:email', checkAuth, (req, res, next) => {
 User.remove({ email: req.params.email })
     .exec()
     .then(result => {
@@ -140,8 +169,32 @@ User.remove({ email: req.params.email })
       });
     });
   });
+  router.patch("/user/:email/", checkAuth, (req, res, next) => {
+    const id = req.body.email;
+    const updateOps = {};
+    for (const ops of req.body) {
+      updateOps[ops.propName] = ops.value;
+    }
+    Pausezeiten.update({ email: id }, { $set: updateOps })
+      .exec()
+      .then(result => {
+        res.status(200).json({
+            message: 'User updated',
+            request: {
+                type: 'GET',
+                url: 'http://localhost:4563/user/:email/' + id
+            }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+  });
 
-//Password forgot
+  //Password forgot
 
 router.post('/forgot', function(req, res, next) {
   async.waterfall([
