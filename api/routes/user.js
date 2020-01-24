@@ -1,15 +1,19 @@
 const express = require("express");
+
 const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); 
+
+const UserController = require('../Controllers/user.js');
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
       cb(null, './uploads/');
     },
     filename: function(req, file, cb) {
-      cb(null, new Date().toDateString() + file.originalname  );
+      cb(null, new Date().getDate() +
+      new Date().getTime() +file.originalname );
     }
 });
 
@@ -34,7 +38,7 @@ const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 
 
-router.get("/user",checkAuth,(req, res, next) => {
+router.get("/user",(req, res, next) => {
   User.find()
     .exec()
     .then(docs => {
@@ -88,7 +92,7 @@ router.post("/register", upload.single('userImage'), (req, res, next) => {
               lastname: req.body.lastname,
               password: hash,
               phonenumber : req.body.phonenumber,
-              userImage: req.file.path
+              userImage: req.body.userImage
             });
             user
               .save()
@@ -169,29 +173,19 @@ User.remove({ email: req.params.email })
       });
     });
   });
-  router.patch("/user/:email/", checkAuth, (req, res, next) => {
-    const id = req.body.email;
-    const updateOps = {};
-    for (const ops of req.body) {
-      updateOps[ops.propName] = ops.value;
-    }
-    Pausezeiten.update({ email: id }, { $set: updateOps })
-      .exec()
-      .then(result => {
-        res.status(200).json({
-            message: 'User updated',
-            request: {
-                type: 'GET',
-                url: 'http://localhost:4563/user/:email/' + id
-            }
-        });
-      })
-      .catch(err => {
-        console.log(err);
-        res.status(500).json({
-          error: err
-        });
-      });
-  });
+
+
+
+  
+  
+  router.patch ('/:id/', UserController.updateAUser);
+  
+    
+  
+  
+    
+    
+   
+
 
 module.exports = router;
