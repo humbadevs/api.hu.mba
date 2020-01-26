@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); 
-const async = require("async");
+const async = require("async-waterfall");
 const crypto = require("crypto");
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -198,7 +198,7 @@ User.remove({ email: req.params.email })
 
   //Password forgot
 
-router.post('/forgot', function(req, res, next) {
+/*router.post('/forgot/:email', (req, res, next) => {
   async.waterfall([
     function(done) {
       crypto.randomBytes(20, function(err, buf) {
@@ -214,18 +214,20 @@ router.post('/forgot', function(req, res, next) {
             error: "User not found"
           });
         }
-        console.log('step 1')
+        console.log('step 1a')
+        console.log(req.body.email)
         user.resetPasswordtoken = token;
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-        console.log('step 2')
+        console.log('step 2b')
         user.save(function(err) {          
           done(err, token, user);
         });
+        console.log('step 3c')
       });
     },
     function(token, user, done) {
       console.log('step 3')
-
+      done(err, token);
 
         //Hier Max Code einfügen
 }
@@ -234,6 +236,61 @@ router.post('/forgot', function(req, res, next) {
     console.log('this err' + ' ' + err)
     res.redirect('/');
   });
-});
+}); */
+
+router.post('/forgot/:email', (req, res, next) => {
+  User.find({ email: req.body.email })
+  .exec()
+  .then(user => {
+    async([
+      function(done) {
+        crypto.randomBytes(20, function(err, buf) {
+          var token = buf.toString('hex');
+          done(err, token);
+          });
+        },
+      function(token, done) {
+        if (!user) {
+          return res.status(404).json({
+            error: "User not found"
+            });
+          }
+        
+          
+          console.log('step 1a')
+          console.log(req.body.email)
+          user.resetPasswordtoken = token;
+          user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+          console.log('step 2b')
+          user
+            .save()
+            .then(result => {
+              console.log(result);
+              res.status(201).json({
+                message: "Token created"
+              });
+            })
+            .catch(err => {
+              console.log(err);
+              res.status(500).json({
+                error: err
+              });
+            });
+          console.log('step 3c')                    
+          done(err, token, user);                  
+      },
+      function(token, user, done) {
+        console.log('step 3')
+        done(err, token);
+
+          //Hier Max Code einfügen
+        },
+      function(err) {
+       console.log('this err' + ' ' + err)
+         res.redirect('/');
+       }
+      ]
+    });
+  });
 
 module.exports = router;
