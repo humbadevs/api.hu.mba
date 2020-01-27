@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); 
-const async = require("async-waterfall");
+const async = require("async");
 const crypto = require("crypto");
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -171,30 +171,31 @@ User.remove({ email: req.params.email })
       });
     });
   });
-  router.patch("/user/:email/", /*checkAuth,*/ (req, res, next) => {
-    const id = req.body.email;
-    const updateOps = {};
-    for (const ops of req.body) {
-      updateOps[ops.propName] = ops.value;
-    }
-    Pausezeiten.update({ email: id }, { $set: updateOps })
-      .exec()
-      .then(result => {
-        res.status(200).json({
-            message: 'User updated',
-            request: {
-                type: 'GET',
-                url: 'http://localhost:4563/user/:email/' + id
-            }
-        });
-      })
-      .catch(err => {
-        console.log(err);
-        res.status(500).json({
-          error: err
-        });
+  
+router.patch("/user/:email/", /*checkAuth,*/ (req, res, next) => {
+  const id = req.body.email;
+  const updateOps = {};
+  for (const ops of req.body) {
+    updateOps[ops.propName] = ops.value;
+  }
+  Pausezeiten.update({ email: id }, { $set: updateOps })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+          message: 'User updated',
+          request: {
+              type: 'GET',
+              url: 'http://localhost:4563/user/:email/' + id
+          }
       });
-  });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
 
   //Password forgot
 
@@ -237,12 +238,12 @@ User.remove({ email: req.params.email })
     res.redirect('/');
   });
 }); */
-
+/*
 router.post('/forgot/:email', (req, res, next) => {
   User.find({ email: req.body.email })
   .exec()
   .then(user => {
-    async([
+    async.waterfall([
       function(done) {
         crypto.randomBytes(20, function(err, buf) {
           var token = buf.toString('hex');
@@ -292,5 +293,34 @@ router.post('/forgot/:email', (req, res, next) => {
       ]
     });
   });
+*/
 
+router.post('/forgot/:email', (req, res, next) => {
+  User.findOne({email: req.params.email})
+    .exec()
+    .then(user => {
+      if(!user){
+        return res.status(404).json({
+          error: "User not found"
+        });
+      }
+      console.log(user + " The old user");
+      var token = null;
+      crypto.randomBytes(20, function(err, buf){
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+      user.resetPasswordtoken = token;
+      user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+      return res.status(200).json({
+        message: user
+      });     
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
 module.exports = router;

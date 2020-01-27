@@ -48,7 +48,7 @@ app.use((error, req, res, next) => {
 });
 
 //Password reset
-
+/*
 app.get('/reset/:token', function(req, res) {
     User.findOne({ resetPasswordtoken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
         console.log(user);
@@ -113,7 +113,7 @@ app.get('/reset/:token', function(req, res) {
         smtpTrans.sendMail(mailOptions, function(err) {
           // req.flash('success', 'Success! Your password has been changed.');
           done(err);
-        }); */
+        }); 
       }
     ], function(err) {
       res.redirect('/');
@@ -126,5 +126,5 @@ app.get('/reset/:token', function(req, res) {
     });
   });
   
-
+*/
 module.exports = app;
