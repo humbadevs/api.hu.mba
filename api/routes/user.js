@@ -305,13 +305,12 @@ router.post('/forgot/:email', (req, res, next) => {
         });
       }
       console.log(user + " The old user");
-      var token = null;
-      crypto.randomBytes(20, function(err, buf){
-        var token = buf.toString('hex');
-        done(err, token);
-      });
+      var buf = crypto.randomBytes(20);
+      token = buf.toString('hex');
       user.resetPasswordtoken = token;
       user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+      console.log(user.resetPasswordExpires + user.resetPasswordtoken);
+      console.log(user.resetPasswordtoken);
       return res.status(200).json({
         message: user
       });     
