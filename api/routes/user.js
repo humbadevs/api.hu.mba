@@ -227,4 +227,29 @@ router.post('/forgot/:email', (req, res, next) => {
       });
     });
 });
+
+router.post('/reset/:token', (req, res, next) => {
+  User.findOne({resetPasswordtoken: req.params.resetPasswordtoken})
+    .exec()
+    .then(user => {
+      if(!user /*|| req.params.resetPasswordExpires > Date.now()*/){
+        return res.status(404).json({
+          error: "User not found"
+        });
+      }
+      const rPE = req.params.resetPasswordExpires
+      //const diff = rPE.getTime() - date.getTime();
+      console.log(date);
+      console.log(user + " The user");
+      return res.status(200).json({
+        message: "Password changed"
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
 module.exports = router;
