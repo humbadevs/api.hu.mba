@@ -198,103 +198,6 @@ router.patch("/user/:email/", /*checkAuth,*/ (req, res, next) => {
 });
 
   //Password forgot
-
-/*router.post('/forgot/:email', (req, res, next) => {
-  async.waterfall([
-    function(done) {
-      crypto.randomBytes(20, function(err, buf) {
-        var token = buf.toString('hex');
-        done(err, token);
-      });
-    },
-    function(token, done) {
-      User.findOne({ email: req.body.email },
-        function(err, user) {
-        if (!user) {
-          return res.status(404).json({
-            error: "User not found"
-          });
-        }
-        console.log('step 1a')
-        console.log(req.body.email)
-        user.resetPasswordtoken = token;
-        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-        console.log('step 2b')
-        user.save(function(err) {          
-          done(err, token, user);
-        });
-        console.log('step 3c')
-      });
-    },
-    function(token, user, done) {
-      console.log('step 3')
-      done(err, token);
-
-        //Hier Max Code einfügen
-}
-  ]
-  , function(err) {
-    console.log('this err' + ' ' + err)
-    res.redirect('/');
-  });
-}); */
-/*
-router.post('/forgot/:email', (req, res, next) => {
-  User.find({ email: req.body.email })
-  .exec()
-  .then(user => {
-    async.waterfall([
-      function(done) {
-        crypto.randomBytes(20, function(err, buf) {
-          var token = buf.toString('hex');
-          done(err, token);
-          });
-        },
-      function(token, done) {
-        if (!user) {
-          return res.status(404).json({
-            error: "User not found"
-            });
-          }
-        
-          
-          console.log('step 1a')
-          console.log(req.body.email)
-          user.resetPasswordtoken = token;
-          user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-          console.log('step 2b')
-          user
-            .save()
-            .then(result => {
-              console.log(result);
-              res.status(201).json({
-                message: "Token created"
-              });
-            })
-            .catch(err => {
-              console.log(err);
-              res.status(500).json({
-                error: err
-              });
-            });
-          console.log('step 3c')                    
-          done(err, token, user);                  
-      },
-      function(token, user, done) {
-        console.log('step 3')
-        done(err, token);
-
-          //Hier Max Code einfügen
-        },
-      function(err) {
-       console.log('this err' + ' ' + err)
-         res.redirect('/');
-       }
-      ]
-    });
-  });
-*/
-
 router.post('/forgot/:email', (req, res, next) => {
   User.findOne({email: req.params.email})
     .exec()
@@ -309,8 +212,10 @@ router.post('/forgot/:email', (req, res, next) => {
       token = buf.toString('hex');
       user.resetPasswordtoken = token;
       user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-      console.log(user.resetPasswordExpires + user.resetPasswordtoken);
+      console.log(user.resetPasswordExpires);
       console.log(user.resetPasswordtoken);
+      user.save();
+      //Jetzt Max Code einfügen
       return res.status(200).json({
         message: user
       });     
