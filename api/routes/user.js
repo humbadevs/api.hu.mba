@@ -88,7 +88,6 @@ router.post("/register", upload.single('userImage'), (req, res, next) => {
               lastname: req.body.lastname,
               password: hash,
               phonenumber : req.body.phonenumber,
-              userImage: req.file.path
             });
             user
               .save()
@@ -169,6 +168,11 @@ User.remove({ email: req.params.email })
       });
     });
   });
+
+  router.patch("/:email/pause", (res, req, next) => {
+    const id = req.params.email;
+    User.update({_id: id}, { $set: {pause: req.body.pausePatch}})
+  })
 
 
 module.exports = router;
