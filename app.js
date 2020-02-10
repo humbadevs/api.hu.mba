@@ -4,7 +4,7 @@ const dotenv = require('dotenv').config();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const humbamail = require('./api/libs/humba-mail-lib');
 const userRoute = require('./api/routes/user');
 
 mongoose.connect('mongodb+srv://root:' + process.env.DBPw + '@node-rest-test-trriz.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
@@ -27,6 +27,11 @@ app.use((req, res, next)=> {
 // ping pong
 app.use('/ping', (req, res) => {
     res.send("pong")
+});
+
+app.use('/sendVerificationMail', (req, res) => {
+    humbamail.sendVerificationMail("Max Mustermann", "maximilian.jendrall@humboldtschule-berlin.eu", "https://max.berlin")
+    res.send("okokok")
 });
 
 //Routes for handling requests

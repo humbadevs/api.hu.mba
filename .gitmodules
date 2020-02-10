@@ -1,0 +1,3 @@
+[submodule "api/libs/humba-mail-lib"]
+	path = api/libs/humba-mail-lib
+	url = https://github.com/humbadevs/humba-mail-lib
