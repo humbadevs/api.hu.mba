@@ -26,7 +26,7 @@ app.use((req, res, next)=> {
 
 // ping pong
 app.use('/ping', (req, res) => {
-    res.send("pong")
+    res.send("pong testing.1.0.1")
 });
 
 app.use('/sendVerificationMail', (req, res) => {
