@@ -170,9 +170,9 @@ User.remove({ email: req.params.email })
   });
 
   router.patch("/:email/pause", (res, req, next) => {
-    const id = req.params.email;
-    User.update({_id: id}, { $set: {pause: req.body.pausePatch}})
-  })
+    const email = req.params.email;
+    User.update({email: email}, { $set: {pause: req.body.pausePatch}});
+  });
 
 
 module.exports = router;
