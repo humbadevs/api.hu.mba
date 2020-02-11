@@ -169,7 +169,7 @@ User.remove({ email: req.params.email })
     });
   });
 
-  router.patch("/:email/pause", (res, req, next) => {
+  router.patch("/:email/pause", checkAuth, (res, req, next) => {
     const email = req.params.email;
     User.update({email: email}, { $set: {pause: req.body.pausePatch}});
   });
