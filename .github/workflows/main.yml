@@ -23,13 +23,10 @@ jobs:
         port: 22
         envs: DBString,redirectWaiter
         script: |
-          echo "deploying"
           cd /home/humba/host/api/
           git clone https://github.com/humbadevs/api.hu.mba.git
           cd api.hu.mba
           git pull
           npm i
-          fuser -k 4563/tcp
-          nohup node server.js </dev/null &>/dev/null &
-          disown
+          pm2 restart api.hu.mba
           exit
