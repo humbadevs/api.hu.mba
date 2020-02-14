@@ -27,7 +27,10 @@ app.use((req, res, next)=> {
 
 // ping pong
 app.use('/ping', (req, res) => {
-    res.send("pong")
+    revision = require('child_process')
+    .execSync('git rev-parse HEAD')
+    .toString().trim()
+    res.send("pong " + revision)
 });
 
 
