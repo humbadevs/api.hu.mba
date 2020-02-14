@@ -22,7 +22,7 @@ router.post("/apply", (req, res) => {
               .save()
               .then(result => {
                 console.log(result);
-                res.redirect(process.env.redirectWaitinglist);
+                res.redirect(process.env.redirectWaiter);
               })
               .catch(err => {
                 console.log(err);
