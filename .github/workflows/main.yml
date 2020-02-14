@@ -14,8 +14,8 @@ jobs:
     - name: Setup server
       uses: appleboy/ssh-action@master
       env:
-          DBPw: ${{ secrets.DBString }}
-          DBPw: ${{ secrets.redirectWaiter }}
+          DBString: ${{ secrets.DBString }}
+          redirectWaiter: ${{ secrets.redirectWaiter }}
       with:
         host: server.max.berlin
         username: humba
