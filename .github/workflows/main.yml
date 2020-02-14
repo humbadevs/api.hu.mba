@@ -14,13 +14,14 @@ jobs:
     - name: Setup server
       uses: appleboy/ssh-action@master
       env:
-          DBPw: ${{ secrets.DBPw }}
+          DBPw: ${{ secrets.DBString }}
+          DBPw: ${{ secrets.redirectWaiter }}
       with:
         host: server.max.berlin
         username: humba
         key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
         port: 22
-        envs: DBPw
+        envs: DBString,redirectWaiter
         script: |
           cd /home/humba/host/api/
           git clone https://github.com/humbadevs/api.hu.mba.git

@@ -6,8 +6,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const userRoute = require('./api/routes/user');
+const waitinglist = require('./api/routes/waitinglist')
 
-mongoose.connect('mongodb+srv://root:' + process.env.DBPw + '@node-rest-test-trriz.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.DBString, {useNewUrlParser: true, useUnifiedTopology: true});
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -29,8 +30,12 @@ app.use('/ping', (req, res) => {
     res.send("pong")
 });
 
+
+
 //Routes for handling requests
 app.use("/", userRoute);
+app.use("/waitinglist", waitinglist);
+
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
