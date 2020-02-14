@@ -28,4 +28,4 @@ In the case of a critical bug or issue please consult us via email:
 - bug@hu.mba
 
 # License
-&copy; 2019 [Humba Team](https://hu.mba/team)
+&copy; 2020 [Humba Team](https://hu.mba/team)
