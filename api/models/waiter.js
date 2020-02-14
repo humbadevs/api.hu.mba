@@ -6,7 +6,12 @@ const waiterSchema = mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+    },
+    timestamp: {
+      type: String,
+      default: new Date().toISOString()
     }
+
 });
 
 //exporting
