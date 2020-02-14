@@ -10,9 +10,7 @@ router.post("/apply", (req, res) => {
     .exec()
     .then(waiter => {
       if (waiter.length >= 1) {
-        return res.status(409).json({
-          message: "Already on waitinglist."
-        });
+        return res.redirect(process.env.redirectWaiter);
       } else {
             const waiter = new Waiter({
               _id: new mongoose.Types.ObjectId(),
