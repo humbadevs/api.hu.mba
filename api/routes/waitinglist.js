@@ -15,6 +15,7 @@ router.post("/apply", (req, res) => {
             const waiter = new Waiter({
               _id: new mongoose.Types.ObjectId(),
               hum_id: req.body.hum_id,
+              timestamp: new Date().toISOString()
             });
             waiter
               .save()
