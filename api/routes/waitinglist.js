@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-
+const dotenv = require('dotenv').config();
 const Waiter = require("../models/waiter");
 
 
@@ -22,7 +22,7 @@ router.post("/apply", (req, res) => {
               .save()
               .then(result => {
                 console.log(result);
-                res.redirect("http://localhost:3000/success");
+                res.redirect(process.env.redirectWaitinglist);
               })
               .catch(err => {
                 console.log(err);
