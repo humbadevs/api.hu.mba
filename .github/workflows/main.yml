@@ -23,9 +23,7 @@ jobs:
         port: 22
         envs: DBString,redirectWaiter
         script: |
-          cd /home/humba/host/api/
-          git clone https://github.com/humbadevs/api.hu.mba.git
-          cd api.hu.mba
+          cd /home/humba/host/api/api.hu.mba
           git pull
           npm i
           pm2 restart api.hu.mba
