@@ -23,6 +23,7 @@ jobs:
         port: 22
         envs: DBString,redirectWaiter
         script: |
+          echo "deploying"
           cd /home/humba/host/api/
           git clone https://github.com/humbadevs/api.hu.mba.git
           cd api.hu.mba
