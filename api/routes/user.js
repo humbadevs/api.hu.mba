@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const multer = require("multer"); 
+const multer = require("multer");
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
       cb(null, './uploads/');
@@ -21,9 +21,9 @@ const fileFilter = (req, file, cb) =>{
   cb(null, false)
 }
   };
-const upload = multer({storage: storage, 
+const upload = multer({storage: storage,
   limits: {
-  fileSize: 1024 * 1024 * 5  
+  fileSize: 1024 * 1024 * 5
 },
 fileFilter: fileFilter
 
@@ -80,7 +80,7 @@ router.post("/register", upload.single('userImage'), (req, res, next) => {
               error: err
             });
           } else {
-           
+
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email,
@@ -169,10 +169,25 @@ User.remove({ email: req.params.email })
     });
   });
 
-  router.patch("/:email/pause", checkAuth, (res, req, next) => {
-    const email = req.params.email;
-    User.update({email: email}, { $set: {pause: req.body.pausePatch}});
-  });
+router.patch("/user/pause/:email", checkAuth, (res, req, next) => {
+  const email = req.params.email;
+  User.update({email: email}, { $set: {pause: req.body.pausePatch}});
+});
 
+router.get("/user/pause/:email", checkAuth, (res, req, next) => {
+  const email = req.params.email;
+  User.find({ email: email })
+    .exec()
+    .then(docs => {
+      console.log(docs.pause);
+      res.status(200).json(docs.pause);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(404).json({
+        error: "User not found"
+      });
+    });
+});
 
 module.exports = router;
