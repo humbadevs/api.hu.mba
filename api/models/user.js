@@ -16,8 +16,26 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    password: { type: String, required: true }
+    password: { 
+        type: String, 
+        required: true
+    },
+    phonenumber: {
+        type: String,
+        unique: true,
+        required: false
+    },
+    userImage: {
+        type: String, 
+        required: false
+    }, 
+    pause: {
+        type: Boolean,
+        default: false
+    },
+
 });
+
 
 //exporting
 module.exports = mongoose.model('User', userSchema);

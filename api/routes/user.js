@@ -3,12 +3,38 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './uploads/');
+    },
+    filename: function(req, file, cb) {
+      cb(null, new Date().toDateString() + file.originalname  );
+    }
+});
+
+const fileFilter = (req, file, cb) =>{
+  //reject file
+  if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+  cb(null, true);
+} else {
+  cb(null, false)
+}
+  };
+const upload = multer({storage: storage,
+  limits: {
+  fileSize: 1024 * 1024 * 5
+},
+fileFilter: fileFilter
+
+});
+
 
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 
 
-router.get("/user", checkAuth, (req, res, next) => {
+router.get("/user",checkAuth,(req, res, next) => {
   User.find()
     .exec()
     .then(docs => {
@@ -23,7 +49,7 @@ router.get("/user", checkAuth, (req, res, next) => {
     });
 });
 
-router.get("/user/:email", checkAuth, (req, res, next) => {
+router.get("/user/:email",checkAuth,   (req, res, next) => {
   User.find({ email: req.params.email })
     .exec()
     .then(docs => {
@@ -38,7 +64,8 @@ router.get("/user/:email", checkAuth, (req, res, next) => {
     });
 });
 
-router.post("/register", (req, res, next) => {
+router.post("/register", upload.single('userImage'), (req, res, next) => {
+
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
@@ -53,12 +80,14 @@ router.post("/register", (req, res, next) => {
               error: err
             });
           } else {
+
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email,
               firstname: req.body.firstname,
               lastname: req.body.lastname,
-              password: hash
+              password: hash,
+              phonenumber : req.body.phonenumber,
             });
             user
               .save()
@@ -140,5 +169,25 @@ User.remove({ email: req.params.email })
     });
   });
 
+router.patch("/user/pause/:email", checkAuth, (res, req, next) => {
+  const email = req.params.email;
+  User.update({email: email}, { $set: {pause: req.body.pausePatch}});
+});
+
+router.get("/user/pause/:email", checkAuth, (res, req, next) => {
+  const email = req.params.email;
+  User.find({ email: email })
+    .exec()
+    .then(docs => {
+      console.log(docs.pause);
+      res.status(200).json(docs.pause);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(404).json({
+        error: "User not found"
+      });
+    });
+});
 
 module.exports = router;
