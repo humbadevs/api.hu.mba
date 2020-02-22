@@ -169,12 +169,12 @@ User.remove({ email: req.params.email })
     });
   });
 
-router.patch("/user/pause/:email", checkAuth, (res, req, next) => {
+router.patch("/user/break/:email", checkAuth, (res, req, next) => {
   const email = req.params.email;
   User.update({email: email}, { $set: {pause: req.body.pausePatch}});
 });
 
-router.get("/user/pause/:email", checkAuth, (res, req, next) => {
+router.get("/user/break/:email", checkAuth, (res, req, next) => {
   const email = req.params.email;
   User.find({ email: email })
     .exec()
