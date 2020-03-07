@@ -33,12 +33,14 @@ app.use('/ping', (req, res) => {
     res.send("pong " + revision)
 });
 
-
+// redirect domain root to website
+app.get("/", (req, res) => {
+  res.redirect("https://hu.mba/")
+})
 
 //Routes for handling requests
 app.use("/", userRoute);
 app.use("/waitinglist", waitinglist);
-
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
