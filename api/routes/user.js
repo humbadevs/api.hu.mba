@@ -56,7 +56,7 @@ router.post("/user", (req, res) => {
             });
           } else {
             const user = new User({
-              _id: new mongoose.Types.ObjectId(),
+              uid: new mongoose.Types.ObjectId(),
               email: req.body.email,
               firstname: req.body.firstname,
               lastname: req.body.lastname,
@@ -118,7 +118,7 @@ router.post("/login", (req, res) => {
         const token = jwt.sign(
           {
             email: user[0].email,
-            userId: user[0]._id
+            userId: user[0].uid
           },
           process.env.JWT_KEY,
           {
