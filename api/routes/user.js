@@ -39,6 +39,7 @@ router.get("/user", checkAuth, (req, res) => {
     });
 });
 
+//Create a user
 router.post("/user", (req, res) => {
   User.find({ email: req.body.email })
     .exec()
@@ -96,7 +97,7 @@ router.delete('/user', checkAuth, (req, res) => {
           error: err
         });
       });
-    });
+});
 
 router.post("/login", (req, res) => {
   User.find({ email: req.body.email })
@@ -141,7 +142,6 @@ router.post("/login", (req, res) => {
     });
   });
 });
-
 
 
 
