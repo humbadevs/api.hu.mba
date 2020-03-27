@@ -7,8 +7,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 
-
-router.get("/user", checkAuth, (req, res) => {
+//Returns all users currently registered in an array
+router.get("/users", checkAuth, (req, res) => {
   User.find()
     .exec()
     .then(docs => {
