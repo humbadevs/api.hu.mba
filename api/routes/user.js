@@ -8,7 +8,7 @@ const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 
 
-router.get("/user", checkAuth, (req, res, next) => {
+router.get("/user", checkAuth, (req, res) => {
   User.find()
     .exec()
     .then(docs => {
@@ -23,8 +23,9 @@ router.get("/user", checkAuth, (req, res, next) => {
     });
 });
 
-router.get("/user/:email", checkAuth, (req, res, next) => {
-  User.find({ email: req.params.email })
+ //Find a specific user with his uId
+router.get("/user", checkAuth, (req, res) => {
+  User.find({ uid: req.body.uid })
     .exec()
     .then(docs => {
       console.log(docs);
@@ -38,7 +39,7 @@ router.get("/user/:email", checkAuth, (req, res, next) => {
     });
 });
 
-router.post("/register", (req, res, next) => {
+router.post("/user", (req, res) => {
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
@@ -58,7 +59,7 @@ router.post("/register", (req, res, next) => {
               email: req.body.email,
               firstname: req.body.firstname,
               lastname: req.body.lastname,
-              password: hash
+              password: hash,
             });
             user
               .save()
@@ -80,7 +81,24 @@ router.post("/register", (req, res, next) => {
     });
 });
 
-router.post("/login", (req, res, next) => {
+//Delete a specific user with his uId
+router.delete('/user', checkAuth, (req, res) => {
+  User.remove({ uid: req.body.uid })
+      .exec()
+      .then(() => {
+        res.status(200).json({
+          message: "User deleted"
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+    });
+
+router.post("/login", (req, res) => {
   User.find({ email: req.body.email })
   .exec()
   .then(user => {
@@ -124,21 +142,7 @@ router.post("/login", (req, res, next) => {
   });
 });
 
-router.delete('/user/:email', checkAuth, (req, res, next) => {
-User.remove({ email: req.params.email })
-    .exec()
-    .then(result => {
-      res.status(200).json({
-        message: "User deleted"
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
-    });
-  });
+
 
 
 module.exports = router;
