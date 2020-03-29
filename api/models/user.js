@@ -29,7 +29,8 @@ const userSchema = mongoose.Schema({
         required: true,
     },
     friends: {
-        type: String,
+        type: [friends],
+        default: undefined,
     },
     currentBreak: {
         type: Boolean,
