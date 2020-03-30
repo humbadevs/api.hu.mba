@@ -22,16 +22,23 @@ const userSchema = mongoose.Schema({
     },
     class: {
         type: String,
-        required: true,
+
+        //Change later for v1
+        required: false,
+        //
     },
     score: {
         type: String,
-        required: true,
+
+        //Change later for v1
+        required: false,
+        //
     },
+    /*
     friends: {
         type: [friends],
         default: undefined,
-    },
+    }, */
     currentBreak: {
         type: Boolean,
         default: false,
