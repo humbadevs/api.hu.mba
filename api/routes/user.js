@@ -3,9 +3,12 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const createError = require('http-errors');
 
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
+
+let re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 
 //Returns all users currently registered in an array
 router.get("/users", checkAuth, (req, res) => {
@@ -23,9 +26,9 @@ router.get("/users", checkAuth, (req, res) => {
     });
 });
 
- //Find a specific user with his uId
+ //Find a specific user with his _id
 router.get("/user", checkAuth, (req, res) => {
-  User.find({ uid: req.body.uid })
+  User.find({ _id: req.body._id })
     .exec()
     .then(docs => {
       console.log(docs);
@@ -56,7 +59,7 @@ router.post("/user", (req, res) => {
             });
           } else {
             const user = new User({
-              uid: new mongoose.Types.ObjectId(),
+              _id: new mongoose.Types.ObjectId(),
               email: req.body.email,
               firstname: req.body.firstname,
               lastname: req.body.lastname,
@@ -83,9 +86,9 @@ router.post("/user", (req, res) => {
     });
 });
 
-//Delete a specific user with his uId
+//Delete a specific user with his _id
 router.delete('/user', checkAuth, (req, res) => {
-  User.remove({ uid: req.body.uid })
+  User.remove({ _id: req.body._id })
       .exec()
       .then(() => {
         res.status(200).json({
@@ -100,6 +103,35 @@ router.delete('/user', checkAuth, (req, res) => {
       });
 });
 
+//Updates the data of a user
+router.patch('/user', checkAuth, async (req, res, next) => {
+  try {
+    const id = req.body._id;
+
+    const update = req.body;
+
+    const options = { new: true };
+
+    const result = await User.findByIdAndUpdate(id, update, options);
+
+    if (!result) {
+      throw createError(404, 'User does not exist');
+    }
+
+    res.send(result);
+    
+  } catch (error) {
+    console.log(error.message);
+
+    if (error instanceof mongoose.CastError) {
+      return next(createError(400, 'Invalid User Id'));
+    }
+
+    next(error);
+  }
+})
+
+//Authenticates user and returns token
 router.post("/user/auth", (req, res) => {
   User.find({ email: req.body.email })
   .exec()
@@ -119,7 +151,7 @@ router.post("/user/auth", (req, res) => {
         const token = jwt.sign(
           {
             email: user[0].email,
-            userId: user[0].uid
+            userId: user[0]._id
           },
           process.env.JWT_KEY,
           {
