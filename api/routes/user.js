@@ -60,6 +60,7 @@ router.post("/user", (req, res) => {
               email: req.body.email,
               firstname: req.body.firstname,
               lastname: req.body.lastname,
+              birthdate: req.body.birthdate,
               password: hash,
             });
             user
@@ -99,7 +100,7 @@ router.delete('/user', checkAuth, (req, res) => {
       });
 });
 
-router.post("/login", (req, res) => {
+router.post("/user/auth", (req, res) => {
   User.find({ email: req.body.email })
   .exec()
   .then(user => {
