@@ -25,7 +25,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.0",
     "morgan": "^1.9.1",
-    "stack": "^0.1.0"
+    "stack": "^0.1.0",
+    "validatorjs": "^3.18.1"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
