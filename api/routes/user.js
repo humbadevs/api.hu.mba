@@ -3,12 +3,14 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const createError = require('http-errors');
 
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
+const validation = require('../middleware/validation');
 
-
-router.get("/user", checkAuth, (req, res, next) => {
+//Returns all users currently registered in an array
+router.get("/users", checkAuth, (req, res) => {
   User.find()
     .exec()
     .then(docs => {
@@ -23,8 +25,9 @@ router.get("/user", checkAuth, (req, res, next) => {
     });
 });
 
-router.get("/user/:email", checkAuth, (req, res, next) => {
-  User.find({ email: req.params.email })
+ //Find a specific user with his _id
+router.get("/user", checkAuth, (req, res) => {
+  User.find({ _id: req.body._id })
     .exec()
     .then(docs => {
       console.log(docs);
@@ -38,7 +41,8 @@ router.get("/user/:email", checkAuth, (req, res, next) => {
     });
 });
 
-router.post("/register", (req, res, next) => {
+//Create a user
+router.post("/user", validation.mailCheck, (req, res) => {
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
@@ -58,7 +62,8 @@ router.post("/register", (req, res, next) => {
               email: req.body.email,
               firstname: req.body.firstname,
               lastname: req.body.lastname,
-              password: hash
+              birthdate: req.body.birthdate,
+              password: hash,
             });
             user
               .save()
@@ -80,7 +85,53 @@ router.post("/register", (req, res, next) => {
     });
 });
 
-router.post("/login", (req, res, next) => {
+//Delete a specific user with his _id
+router.delete('/user', checkAuth, (req, res) => {
+  User.remove({ _id: req.body._id })
+      .exec()
+      .then(() => {
+        res.status(200).json({
+          message: "User deleted"
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+});
+
+//Updates the data of a user
+router.patch('/user', checkAuth, validation.mailCheck, async (req, res, next) => {
+  try {
+    const id = req.body._id;
+
+    const update = req.body;
+
+    const options = { new: true };
+
+    const result = await User.findByIdAndUpdate(id, update, options);
+
+    if (!result) {
+      throw createError(404, 'User does not exist');
+    }
+
+    res.send(result);
+    
+  } catch (error) {
+    console.log(error.message);
+
+    if (error instanceof mongoose.CastError) {
+      return next(createError(400, 'Invalid User Id'));
+    }
+
+    next(error);
+  }
+});
+
+//Authenticates user and returns token
+router.post("/user/auth", (req, res) => {
   User.find({ email: req.body.email })
   .exec()
   .then(user => {
@@ -108,7 +159,8 @@ router.post("/login", (req, res, next) => {
         );
         return res.status(200).json({
           message: "Auth successful",
-          token: token
+          token: token,
+          _id: user[0]._id
         });
       }
       res.status(401).json({
@@ -124,21 +176,6 @@ router.post("/login", (req, res, next) => {
   });
 });
 
-router.delete('/user/:email', checkAuth, (req, res, next) => {
-User.remove({ email: req.params.email })
-    .exec()
-    .then(result => {
-      res.status(200).json({
-        message: "User deleted"
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
-    });
-  });
 
 
 module.exports = router;
