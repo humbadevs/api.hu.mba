@@ -8,8 +8,6 @@ const createError = require('http-errors');
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 
-let re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-
 //Returns all users currently registered in an array
 router.get("/users", checkAuth, (req, res) => {
   User.find()
@@ -160,7 +158,8 @@ router.post("/user/auth", (req, res) => {
         );
         return res.status(200).json({
           message: "Auth successful",
-          token: token
+          token: token,
+          _id: user[0]._id
         });
       }
       res.status(401).json({
