@@ -7,6 +7,7 @@ const createError = require('http-errors');
 
 const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
+const validation = require('../middleware/validation');
 
 //Returns all users currently registered in an array
 router.get("/users", checkAuth, (req, res) => {
@@ -41,7 +42,7 @@ router.get("/user", checkAuth, (req, res) => {
 });
 
 //Create a user
-router.post("/user", (req, res) => {
+router.post("/user", validation.mailCheck, (req, res) => {
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
@@ -102,7 +103,7 @@ router.delete('/user', checkAuth, (req, res) => {
 });
 
 //Updates the data of a user
-router.patch('/user', checkAuth, async (req, res, next) => {
+router.patch('/user', checkAuth, validation.mailCheck, async (req, res, next) => {
   try {
     const id = req.body._id;
 
@@ -127,7 +128,7 @@ router.patch('/user', checkAuth, async (req, res, next) => {
 
     next(error);
   }
-})
+});
 
 //Authenticates user and returns token
 router.post("/user/auth", (req, res) => {
