@@ -16,7 +16,41 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    password: { type: String, required: true }
+    birthdate: {
+        type: Date,
+        required: true
+    },
+    class: {
+        type: String,
+
+        //Change later for v1
+        required: false,
+        //
+    },
+    score: {
+        type: String,
+
+        //Change later for v1
+        required: false,
+        //
+    },
+    /*
+    friends: {
+        type: [friends],
+        default: undefined,
+    }, */
+    currentBreak: {
+        type: Boolean,
+        default: false,
+    },
+    lastBreak: {
+        type: String,
+        default: null,
+    },
+    password: { 
+        type: String, 
+        required: true, 
+    }
 });
 
 //exporting
