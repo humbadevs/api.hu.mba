@@ -32,4 +32,22 @@ router.post("/apply", (req, res) => {
           }
       })
 });
+
+// this function has to be replaced with an admin dashboard api !
+router.get("/count", (req, res) => {
+  key = process.env.COUNT_ENDPOINT_KEY // hardcoded api key -> I know it's bad (blame it on @toorusr)
+  if (key == req.query.key) {
+    Waiter.find({})
+      .exec()
+      .then(waiters => {
+        if (waiters.length >= 1) {
+          return res.json({"applied": waiters.length})
+        } else {
+          return res.sendStatus(404)
+        }
+    })
+  } else {
+    res.sendStatus(401)
+  }
+});
 module.exports = router;
