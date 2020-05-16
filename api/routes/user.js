@@ -9,8 +9,39 @@ const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 const validation = require('../middleware/validation');
 
+//For picture upload
+const multer = require("multer");
+
+//Setting destination folder
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './uploads/');
+    },
+    filename: function(req, file, cb) {
+      cb(null, new Date().toDateString() + file.originalname  );
+    }
+});
+
+//Setting parameters for specific files
+const fileFilter = (req, file, cb) =>{
+  if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+    cb(null, true);
+  } else {
+    cb(null, false)
+  }
+};
+
+//Uploading picture into folder
+const upload = multer({storage: storage,
+  limits: {
+  fileSize: 1024 * 1024 * 5
+},
+fileFilter: fileFilter
+
+});
+
 //Returns all users currently registered in an array
-router.get("/users", checkAuth, (req, res) => {
+router.get("/users", (req, res) => {
   User.find()
     .exec()
     .then(docs => {
@@ -25,7 +56,7 @@ router.get("/users", checkAuth, (req, res) => {
     });
 });
 
- //Find a specific user with his _id
+//Find a specific user with his _id
 router.get("/user", checkAuth, (req, res) => {
   User.find({ _id: req.body._id })
     .exec()
@@ -42,7 +73,7 @@ router.get("/user", checkAuth, (req, res) => {
 });
 
 //Create a user
-router.post("/user", validation.mailCheck, (req, res) => {
+router.post("/user", upload.single('userImage'), (req, res) => {
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
@@ -63,6 +94,7 @@ router.post("/user", validation.mailCheck, (req, res) => {
               firstname: req.body.firstname,
               lastname: req.body.lastname,
               birthdate: req.body.birthdate,
+              userImgae: req.file.path,
               password: hash,
             });
             user
@@ -103,7 +135,7 @@ router.delete('/user', checkAuth, (req, res) => {
 });
 
 //Updates the data of a user
-router.patch('/user', checkAuth, validation.mailCheck, async (req, res, next) => {
+router.patch('/user', checkAuth, async (req, res, next) => {
   try {
     const id = req.body._id;
 
@@ -137,7 +169,7 @@ router.post("/user/auth", (req, res) => {
   .then(user => {
     if (user.length < 1) {
       return res.status(401).json({
-        message: "Auth failed"
+        message: "Auth failed: user not found"
       });
     }
     bcrypt.compare(req.body.password, user[0].password, (err, result) => {
