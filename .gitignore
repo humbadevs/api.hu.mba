@@ -47,6 +47,9 @@ typings/
 # Picture Uploads
 uploads/
 
+# Picture Uploads
+.vs/
+
 # TypeScript cache
 *.tsbuildinfo
 

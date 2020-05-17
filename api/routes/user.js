@@ -94,6 +94,7 @@ router.post("/user", upload.single('userImage'), (req, res) => {
               firstname: req.body.firstname,
               lastname: req.body.lastname,
               birthdate: req.body.birthdate,
+              // TODO: most likely needs fixes
               userImgae: req.file.path,
               password: hash,
             });
@@ -134,6 +135,7 @@ router.delete('/user', checkAuth, (req, res) => {
       });
 });
 
+// TODO: check for profile picture working
 //Updates the data of a user
 router.patch('/user', checkAuth, async (req, res, next) => {
   try {
