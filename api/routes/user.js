@@ -210,6 +210,21 @@ router.post("/user/auth", (req, res) => {
   });
 });
 
+router.get("/user/available", checkAuth, (req,res,next) => {
+  User.find({currentBreak: true})
+  .exec()
+    .then(docs => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(404).json({
+        error: "No frree users found"
+      });
+    });
+})
+
 
 
 module.exports = router;
