@@ -44,6 +44,12 @@ jspm_packages/
 # TypeScript v1 declaration files
 typings/
 
+# Picture Uploads
+uploads/
+
+# Picture Uploads
+.vs/
+
 # TypeScript cache
 *.tsbuildinfo
 

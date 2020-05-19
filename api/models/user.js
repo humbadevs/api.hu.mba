@@ -32,13 +32,14 @@ const userSchema = mongoose.Schema({
 
         //Change later for v1
         required: false,
-        //
     },
+
     /*
     friends: {
         type: [friends],
         default: undefined,
     }, */
+
     currentBreak: {
         type: Boolean,
         default: false,
@@ -50,7 +51,11 @@ const userSchema = mongoose.Schema({
     password: { 
         type: String, 
         required: true, 
-    }
+    },
+    userImage: {
+        type: String, 
+        required: false
+    },
 });
 
 //exporting
