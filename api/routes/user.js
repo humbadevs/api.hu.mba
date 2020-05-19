@@ -210,7 +210,7 @@ router.post("/user/auth", (req, res) => {
   });
 });
 
-router.get("/user/available", checkAuth, (req,res,next) => {
+router.get("/user/available", (req,res,next) => {
   User.find({currentBreak: true})
   .exec()
     .then(docs => {
