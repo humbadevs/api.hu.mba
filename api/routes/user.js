@@ -73,7 +73,7 @@ router.get("/user", checkAuth, (req, res) => {
 });
 
 //Create a user
-router.post("/user", upload.single('userImage'), (req, res) => {
+router.post("/user", /*upload.single('userImage')*/ (req, res) => {
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
