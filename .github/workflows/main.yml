@@ -17,7 +17,7 @@ jobs:
           DBString: ${{ secrets.DBString }}
           redirectWaiter: ${{ secrets.redirectWaiter }}
       with:
-        host: server.max.berlin
+        host:  ${{ secrets.host }}
         username: humba
         key: ${{ secrets.HUMBA_PRIVATE_SSH_KEY }}
         port: 22
