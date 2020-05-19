@@ -41,7 +41,7 @@ fileFilter: fileFilter
 });
 
 //Returns all users currently registered in an array
-router.get("/users", (req, res) => {
+router.get("/users", checkAuth, (req, res) => {
   User.find()
     .exec()
     .then(docs => {
