@@ -137,7 +137,7 @@ router.delete('/user', checkAuth, (req, res) => {
 
 // TODO: check for profile picture working
 //Updates the data of a user
-router.patch('/user', checkAuth, async (req, res, next) => {
+router.patch('/user', async (req, res, next) => {
   try {
     const id = req.body._id;
 
