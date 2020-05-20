@@ -94,6 +94,7 @@ router.post("/user", /*upload.single('userImage')*/ (req, res) => {
               firstname: req.body.firstname,
               lastname: req.body.lastname,
               birthdate: req.body.birthdate,
+              phonenumber: req.body.phonenumber,
               // TODO: most likely needs fixes
               //userImgae: req.file.path,
               password: hash,
@@ -194,7 +195,8 @@ router.post("/user/auth", (req, res) => {
         return res.status(200).json({
           message: "Auth successful",
           token: token,
-          _id: user[0]._id
+          _id: user[0]._id,
+          phonenumber: user[0].phonenumber,
         });
       }
       res.status(401).json({
@@ -220,7 +222,7 @@ router.get("/user/available", (req,res,next) => {
     .catch(err => {
       console.log(err);
       res.status(404).json({
-        error: "No frree users found"
+        error: "No free users found"
       });
     });
 })
