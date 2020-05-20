@@ -94,7 +94,6 @@ router.post("/user", /*upload.single('userImage')*/ (req, res) => {
               firstname: req.body.firstname,
               lastname: req.body.lastname,
               birthdate: req.body.birthdate,
-              // TODO: most likely needs fixes
               //userImgae: req.file.path,
               password: hash,
             });
