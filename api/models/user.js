@@ -33,8 +33,9 @@ const userSchema = mongoose.Schema({
         //Change later for v1
         required: false,
     },
+
     phonenumber: {
-        type: Number,
+        type: String,
         required: true
     },
 
