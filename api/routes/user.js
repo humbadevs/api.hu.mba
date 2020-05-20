@@ -121,7 +121,7 @@ router.post("/user", /*upload.single('userImage')*/ (req, res) => {
 });
 
 //Delete a specific user with his _id
-router.delete('/user', checkAuth, (req, res) => {
+router.delete('/user', (req, res) => {
   User.remove({ _id: req.body._id })
       .exec()
       .then(() => {
@@ -213,7 +213,7 @@ router.post("/user/auth", (req, res) => {
   });
 });
 
-router.get("/user/available", checkAuth, (req,res,next) => {
+router.get("/user/available", (req,res,next) => {
   User.find({currentBreak: true})
   .exec()
     .then(docs => {
