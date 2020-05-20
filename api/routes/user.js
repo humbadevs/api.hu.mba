@@ -9,6 +9,7 @@ const User = require("../models/user");
 const checkAuth = require('../middleware/check-auth');
 const validation = require('../middleware/validation');
 
+//Picturing
 //For picture upload
 const multer = require("multer");
 
@@ -212,7 +213,7 @@ router.post("/user/auth", (req, res) => {
   });
 });
 
-router.get("/user/available", (req,res,next) => {
+router.get("/user/available", checkAuth, (req,res,next) => {
   User.find({currentBreak: true})
   .exec()
     .then(docs => {
